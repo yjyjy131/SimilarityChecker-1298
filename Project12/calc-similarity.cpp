@@ -4,10 +4,12 @@ using namespace std;
 class SimilarityChecker {
 public:
 	SimilarityChecker(const string& answer) 
-		: answer{answer} {
+		: answer{answer} 
+	{
+		memset(alphaCheck, 0, sizeof(alphaCheck));
 	}
 
-	int getScore(string target) {
+	int getLengthScore(string target) {
 		int longLen = getLongLength(answer, target);
 		int shortLen = getShortLength(answer, target);
 
@@ -41,8 +43,30 @@ public:
 		return MAX_LENGTH_POINT - MAX_LENGTH_POINT * gap / input2;
 	}
 
+
+	int getAlphaScore(string target) {
+		float totalCnt = 0;
+		float sameCnt = 0;
+
+		for (int i = 'A'; i <= 'Z'; i++)
+		{
+			if (answer.find(i) != string::npos || target.find(i) != string::npos) totalCnt++;
+		}
+
+		for (int i = 0; i < target.length(); i++) {
+			if (answer.find(target[i]) != string::npos) {
+				if (alphaCheck[target[i] - 65] == 0) sameCnt++;
+				alphaCheck[target[i] - 65]++;
+			}
+		}
+
+		return (int) (sameCnt / totalCnt * 40);
+	}
+
 private:
 	string answer;
 	const int MAX_LENGTH_POINT = 60;
 	const int MIN_LENGHT_POINT = 0;
+
+	int alphaCheck[26];
 };
